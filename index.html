@@ -81,19 +81,35 @@
 
 <div class="form-box">
   <select id="currency" onchange="loadRates(this.value)">
+    
+    <option value="aed">AED（阿联酋迪拉姆）</option>
+    <option value="aud">AUD（澳元）</option>
+    <!--<option value="brl">BRL（巴西雷亚尔）</option>-->
+    <option value="eur">EUR（欧元，德国）</option>
+    <!--<option value="fjd">FJD（斐济元）</option>-->
     <option value="hkd">HKD（港元）</option>
+    <option value="idr">IDR（印尼盾）</option>
+    <option value="inr">INR（印度卢比）</option>
+    <option value="khr">KHR（柬埔寨瑞尔）</option>
+    <!--<option value="krw">KRW（韩元）</option>-->
+    <option value="lak">LAK（老挝基普）</option>
+    <!--<option value="myr">MYR（马来西亚林吉特）</option>-->
+    <option value="pkr">PKR（巴基斯坦卢比）</option>
+    <!--<option value="sgd">SGD（新加坡元）</option>-->
+    <!--<option value="thb">THB（泰铢）</option>-->
+    <option value="try">TRY（土耳其里拉）</option>
     <option value="tzs">TZS（坦桑尼亚先令）</option>
     <option value="usd">USD（美元）</option>
-    <option value="lak">LAK（老挝基普）</option>
-    <option value="idr">IDR（印尼盾）</option>
-    <option value="aud">AUD（澳元）</option>
+    <option value="vnd">VND（越南盾）</option>
+    <option value="zar">ZAR（南非兰特）</option>
+
   </select>
   <div class="spinner" id="spinner" style="display:none"></div>
 </div>
 
 <div class="grid" id="grid"></div>
 
-<footer>&copy; 2024 <strong>FX RP</strong> &nbsp;&nbsp;&nbsp; FX Rate Pro 汇率专业服务</footer>
+<footer>&copy; 2025 <strong>FX RP</strong> &nbsp;&nbsp;&nbsp; FX Rate Pro 汇率专业服务</footer>
 
 <script>
 /* ---------- 工具函数（中文注释） ---------- */
@@ -118,17 +134,51 @@ function row(label, value, metaText){
 
 /* ---------- 示例数据（与你原始数据一致） ---------- */
 const rates = {
-  "hkd": { buy: "8.296", sell: "7.70", buyVolume: "1.1317千万", sellVolume: "8.477千万" },
-  "tzs": { buy: "2556.88", sell: "2494.43", buyVolume: "148333.18", sellVolume: "2.76 千万 " },
-  "usd": { buy: "1.062", sell: "0.93123", buyVolume: "600973.47", sellVolume: "11.175亿" },
-  "lak": { buy: "22149.51", sell: "21035.67", buyVolume: "173622.245", sellVolume: "838576.43" },
-  "idr": { buy: "16883.7", sell: "16194.18", buyVolume: "645125.11", sellVolume: "1.259亿" },
-  "aud": { buy: "1.674", sell: "1.2142", buyVolume: "127187.21", sellVolume: "4.5千万" }
+  "lak": { buy: "22192.50", sell: "21650.00", buyVolume: "274247.93", sellVolume: "373814.03" },
+  "tzs": { buy: "2602.00", sell: "2400.12", buyVolume: "154419.13", sellVolume: "26319021.33" },
+  "aed": { buy: "3.77", sell: "3.57", buyVolume: "3023034.85", sellVolume: "112931159.97" },
+  "aud": { buy: "1.70", sell: "1.40", buyVolume: "124099.75", sellVolume: "46191939.90" },
+  //"brl": { buy: "5.13", sell: "0", buyVolume: "50131.40", sellVolume: "0" },
+  "eur": { buy: "0.91", sell: "0.83", buyVolume: "930116.21", sellVolume: "59191966.82" },
+  "hkd": { buy: "7.89", sell: "7.77", buyVolume: "6246946.22", sellVolume: "154805922.38" },
+  "idr": { buy: "16474.50", sell: "16100.00", buyVolume: "2568620.31", sellVolume: "149924656.12" },
+  "inr": { buy: "96.75", sell: "88.00", buyVolume: "408808.87", sellVolume: "62674259.66" },
+  "khr": { buy: "4040.00", sell: "3945.00", buyVolume: "118740.43", sellVolume: "22933076.29" },
+  "lak": { buy: "22185.00", sell: "21764.50", buyVolume: "470503.41", sellVolume: "458843.83" },
+  "pkr": { buy: "299.50", sell: "282.19", buyVolume: "495969.30", sellVolume: "55214889.21" },
+  "try": { buy: "43.50", sell: "36.50", buyVolume: "117992.20", sellVolume: "45137779.40" },
+  "usd": { buy: "1.03", sell: "0.99", buyVolume: "3401166.85", sellVolume: "204970731.75" },
+  "vnd": { buy: "26895.00", sell: "25803.00", buyVolume: "6179397.54", sellVolume: "536043889.48" },
+  "zar": { buy: "21.12", sell: "17.09", buyVolume: "114933.71", sellVolume: "25180141.17" },
+  "fjd": { buy: "0", sell: "0", buyVolume: "0", sellVolume: "0" },
+  "krw": { buy: "0", sell: "0", buyVolume: "0", sellVolume: "0" },
+  "myr": { buy: "0", sell: "0", buyVolume: "0", sellVolume: "0" },
+  "sgd": { buy: "0", sell: "0", buyVolume: "0", sellVolume: "0" },
+  "thb": { buy: "0", sell: "0", buyVolume: "0", sellVolume: "0" }
 };
 
 /* 基准参考汇率（用于计算差异百分比） */
 const exchangeRates = {
-  "usd": 1.00, "hkd": 7.81135, "tzs": 2519.99, "lak": 21481.23, "idr": 16255.118, "aud": 1.5408
+  "usd": 1.000115,
+  "hkd": 7.808151,
+  "tzs": 2507.28671,
+  "lak": 21762.71968,
+  "idr": 16268.61705,
+  "aud": 1.54502,
+  "brl": 5.41190896,
+  "eur": 0.86096,
+  "inr": 87.75292148,
+  "khr": 4020.74002,
+  "pkr": 284.059544,
+  "try": 41.014962674,
+  "vnd": 26343.554412,
+  "zar": 17.612433062,
+  "fjd": 2.266387944646691364756,
+  "krw": 1396.544120879963105879469,
+  "myr": 4.2168027178,
+  "sgd": 1.28535827657813751182,
+  "thb": 32.45640645558698986393,
+  "aed": 3.672992288163949338963
 };
 
 /* ---------- 主逻辑：加载并渲染 ---------- */
@@ -139,15 +189,15 @@ async function loadRates(code){
     const base = exchangeRates[code];
 
     // 计算差异（百分比）：(现价-基准)/基准 * 100
-    const buyDiffPct  = ( (num(data.buy)  - num(base)) / num(base) *100 );
-    const sellDiffPct = ( (num(data.sell) - num(base)) / num(base) *100 );
+    const buyDiffPct  = (((num(data.buy)  - num(base)) / num(base)) * 100).toFixed(1);
+    const sellDiffPct = (((num(data.sell) - num(base)) / num(base)) * 100).toFixed(1);
 
     
     // 右侧第三列统一存在：两行显示百分比，两行显示占位“—”
     $('#grid').innerHTML =
-      row('买入价--USDT', data.buy, '(' + pct(buyDiffPct )+ ')') +
+      row('买入价--USDT', data.buy, '(' + buyDiffPct+ '%)') +
       row('买入近期交易量', data.buyVolume + ' USDT', '') +
-      row('卖出价--USDT', data.sell, '(' + pct(sellDiffPct) + ')') +
+      row('卖出价--USDT', data.sell, '(' + sellDiffPct + '%)') +
       row('卖出近期交易量', data.sellVolume + ' USDT', '');
 
   }catch(e){
@@ -159,7 +209,7 @@ async function loadRates(code){
 }
 
 /* 默认加载一个币种以展示 */
-loadRates('aud');
+loadRates('aed');
 </script>
 </body>
 </html>
