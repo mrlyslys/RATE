@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>FX Rate Pro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<style>
+  /* ---- 主题色 ---- */
+  :root{
+    --bg:#0d1117;--card:#161b22;--glass:rgba(255,255,255,.08);
+    --accent:#00f5ff;--text:#f0f6fc;--muted:#8b949e
+  }
+
+  /* ---- 基础排版 ---- */
+  body{
+    margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--text);
+    display:flex; flex-direction:column; align-items:center; min-height:100vh;
+  }
+  header{
+    width:100%; padding:1.2rem 0; text-align:center; font-size:1.6rem; font-weight:800;
+    background:linear-gradient(90deg,#00f5ff,#a855f7);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  }
+  footer{width:100%; text-align:center; padding:1rem 0; font-size:.9rem; color:var(--muted)}
+
+  /* ---- 选择框与加载 ---- */
+  .form-box{display:flex; flex-direction:column; align-items:center; margin:1rem 0}
+  select{
+    width:260px; font-size:1.1rem; padding:.75rem; border:none; border-radius:12px;
+    background:var(--glass); backdrop-filter:blur(8px); color:#00aaff;
+    outline:2px solid var(--accent); outline-offset:-2px; cursor:pointer;
+  }
+  .spinner{margin:.5rem 0;width:20px;height:20px;border:2px solid var(--accent);
+    border-top:2px solid transparent;border-radius:50%;animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ---- 列表网格 ---- */
+  .grid{display:grid; gap:1rem; padding:0 1rem 2rem; width:100%; max-width:680px}
+
+  /* ---- 行卡片：固定三列，绝对对齐 ---- */
+  .row{
+    display:grid;
+    /* 左列固定 160px；中列自适应；右列固定 120px —— 三列一定对齐 */
+    grid-template-columns: 160px 1fr 120px;
+    align-items:center; gap:.75rem;
+    padding:1rem; border-radius:16px; background:var(--card);
+    box-shadow:0 4px 18px rgba(0,0,0,.35); backdrop-filter:blur(12px);
+  }
+
+  /* ---- 列内样式 ---- */
+  .label{font-size:1.05rem}
+  .value,.meta{
+    /* 使用等宽数字，保证同位数竖直对齐 */
+    font-variant-numeric: tabular-nums; 
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    text-align:right;
+  }
+  .value{font-size:1.15rem; color:var(--accent); white-space:nowrap}
+  .meta{font-size:.95rem; color:var(--muted); white-space:nowrap}
+  .meta.badge{
+    /* 右侧百分比的小徽标外观（可选） */
+    background:rgba(255,255,255,.08); padding:.25rem .5rem; border-radius:12px;
+    display:inline-block;
+  }
+  .meta.placeholder{opacity:.5} /* 占位符样式 */
+
+  @media (max-width:480px){
+    header{font-size:1.3rem}
+    select{width:90%}
+    .row{grid-template-columns: 120px 1fr 100px;}
+    .value{font-size:1rem}
+  }
+</style>
+</head>
+<body>
+
+<header><i class="fas fa-chart-line"></i> FX Rate Pro</header>
+
+<div class="form-box">
+  <select id="currency" onchange="loadRates(this.value)">
+    <option value="hkd">HKD（港元）</option>
+    <option value="tzs">TZS（坦桑尼亚先令）</option>
+    <option value="usd">USD（美元）</option>
+    <option value="lak">LAK（老挝基普）</option>
+    <option value="idr">IDR（印尼盾）</option>
+    <option value="aud">AUD（澳元）</option>
+  </select>
+  <div class="spinner" id="spinner" style="display:none"></div>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<footer>&copy; 2024 <strong>FX RP</strong> &nbsp;&nbsp;&nbsp; FX Rate Pro 汇率专业服务</footer>
+
+<script>
+/* ---------- 工具函数（中文注释） ---------- */
+const $ = s => document.querySelector(s);
+
+/* 将字符串安全转数字 */
+const num = v => typeof v === 'number' ? v : parseFloat(String(v).replace(/[,\s]/g,'') || '0');
+
+/* 百分比格式化（带%并保留5位小数） */
+function pct(n){ return (n).toFixed(5) + '%'; }
+
+/* 渲染一行（名称/数值/右侧差异或占位） */
+function row(label, value, metaText){
+  return `
+    <div class="row">
+      <span class="label">${label}</span>
+      <span class="value">${value}</span>
+      <span class="meta ${metaText ? 'badge' : 'placeholder'}">${metaText || '—'}</span>
+    </div>
+  `;
+}
+
+/* ---------- 示例数据（与你原始数据一致） ---------- */
+const rates = {
+  "hkd": { buy: "8.296", sell: "7.70", buyVolume: "1.1317千万", sellVolume: "8.477千万" },
+  "tzs": { buy: "2556.88", sell: "2494.43", buyVolume: "148333.18", sellVolume: "2.76 千万 " },
+  "usd": { buy: "1.062", sell: "0.93123", buyVolume: "600973.47", sellVolume: "11.175亿" },
+  "lak": { buy: "22149.51", sell: "21035.67", buyVolume: "173622.245", sellVolume: "838576.43" },
+  "idr": { buy: "16883.7", sell: "16194.18", buyVolume: "645125.11", sellVolume: "1.259亿" },
+  "aud": { buy: "1.674", sell: "1.2142", buyVolume: "127187.21", sellVolume: "4.5千万" }
+};
+
+/* 基准参考汇率（用于计算差异百分比） */
+const exchangeRates = {
+  "usd": 1.00, "hkd": 7.81135, "tzs": 2519.99, "lak": 21481.23, "idr": 16255.118, "aud": 1.5408
+};
+
+/* ---------- 主逻辑：加载并渲染 ---------- */
+async function loadRates(code){
+  $('#spinner').style.display='inline-block';
+  try{
+    const data = rates[code];
+    const base = exchangeRates[code];
+
+    // 计算差异（百分比）：(现价-基准)/基准 * 100
+    const buyDiffPct  = ( (num(data.buy)  - num(base)) / num(base) *100 );
+    const sellDiffPct = ( (num(data.sell) - num(base)) / num(base) *100 );
+
+    
+    // 右侧第三列统一存在：两行显示百分比，两行显示占位“—”
+    $('#grid').innerHTML =
+      row('买入价--USDT', data.buy, '(' + pct(buyDiffPct )+ ')') +
+      row('买入近期交易量', data.buyVolume + ' USDT', '') +
+      row('卖出价--USDT', data.sell, '(' + pct(sellDiffPct) + ')') +
+      row('卖出近期交易量', data.sellVolume + ' USDT', '');
+
+  }catch(e){
+    console.error(e);
+    $('#grid').innerHTML = `<div class="row"><span class="label">加载失败</span><span class="value">请稍后重试</span><span class="meta placeholder">—</span></div>`;
+  }finally{
+    $('#spinner').style.display='none';
+  }
+}
+
+/* 默认加载一个币种以展示 */
+loadRates('aud');
+</script>
+</body>
+</html>
