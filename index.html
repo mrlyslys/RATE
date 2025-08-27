@@ -7,72 +7,160 @@
 <link rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <style>
-  /* ---- 主题色 ---- */
-  :root{
-    --bg:#0d1117;--card:#161b22;--glass:rgba(255,255,255,.08);
-    --accent:#00f5ff;--text:#f0f6fc;--muted:#8b949e
-  }
+:root{
+  --bg:#0d1117;
+  --card:#161b22;
+  --glass:rgba(255,255,255,.06);
+  --accent:#00f5ff;
+  --accent2:#a855f7;
+  --text:#f0f6fc;
+  --muted:#8b949e;
+  --up:#16c784;
+  --down:#ff4d4f;
+}
 
-  /* ---- 基础排版 ---- */
-  body{
-    margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--bg); color:var(--text);
-    display:flex; flex-direction:column; align-items:center; min-height:100vh;
-  }
-  header{
-    width:100%; padding:1.2rem 0; text-align:center; font-size:1.6rem; font-weight:800;
-    background:linear-gradient(90deg,#00f5ff,#a855f7);
-    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-  }
-  footer{width:100%; text-align:center; padding:1rem 0; font-size:.9rem; color:var(--muted)}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  min-height:100vh;
+}
 
-  /* ---- 选择框与加载 ---- */
-  .form-box{display:flex; flex-direction:column; align-items:center; margin:1rem 0}
-  select{
-    width:260px; font-size:1.1rem; padding:.75rem; border:none; border-radius:12px;
-    background:var(--glass); backdrop-filter:blur(8px); color:#00aaff;
-    outline:2px solid var(--accent); outline-offset:-2px; cursor:pointer;
-  }
-  .spinner{margin:.5rem 0;width:20px;height:20px;border:2px solid var(--accent);
-    border-top:2px solid transparent;border-radius:50%;animation:spin 1s linear infinite}
-  @keyframes spin{to{transform:rotate(360deg)}}
+header{
+  width:100%;
+  padding:1.5rem 0;
+  text-align:center;
+  font-size:2rem;
+  font-weight:800;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  letter-spacing:1px;
+  text-shadow:0 0 12px rgba(0,245,255,.3);
+}
 
-  /* ---- 列表网格 ---- */
-  .grid{display:grid; gap:1rem; padding:0 1rem 2rem; width:100%; max-width:680px}
+footer{
+  width:100%;
+  text-align:center;
+  padding:1.2rem 0;
+  font-size:.9rem;
+  color:var(--muted);
+  border-top:1px solid rgba(255,255,255,.08);
+}
 
-  /* ---- 行卡片：固定三列，绝对对齐 ---- */
-  .row{
-    display:grid;
-    /* 左列固定 160px；中列自适应；右列固定 120px —— 三列一定对齐 */
-    grid-template-columns: 160px 1fr 120px;
-    align-items:center; gap:.75rem;
-    padding:1rem; border-radius:16px; background:var(--card);
-    box-shadow:0 4px 18px rgba(0,0,0,.35); backdrop-filter:blur(12px);
-  }
+/* 选择框 */
+.form-box{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin:1.5rem 0;
+}
+select{
+  width:280px;
+  font-size:1.1rem;
+  padding:.85rem;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(135deg,#1f2937,#0f172a);
+  color:var(--accent);
+  outline:2px solid var(--accent);
+  outline-offset:-2px;
+  cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,0,0,.3);
+  transition:.3s ease;
+  appearance:none;   /* 隐藏默认箭头 */
+}
+select option {
+  background:var(--card);   /* 深色背景 */
+  color:var(--text);        /* 浅色文字 */
+  padding:.6rem;
+}
+select option:hover,
+select option:checked {
+  background:var(--accent2);
+  color:#fff;
+}
 
-  /* ---- 列内样式 ---- */
-  .label{font-size:1.05rem}
-  .value,.meta{
-    /* 使用等宽数字，保证同位数竖直对齐 */
-    font-variant-numeric: tabular-nums; 
-    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    text-align:right;
-  }
-  .value{font-size:1.15rem; color:var(--accent); white-space:nowrap}
-  .meta{font-size:.95rem; color:var(--muted); white-space:nowrap}
-  .meta.badge{
-    /* 右侧百分比的小徽标外观（可选） */
-    background:rgba(255,255,255,.08); padding:.25rem .5rem; border-radius:12px;
-    display:inline-block;
-  }
-  .meta.placeholder{opacity:.5} /* 占位符样式 */
+/* 加载动画 */
+.spinner{
+  margin:.75rem 0;
+  width:22px;height:22px;
+  border:3px solid var(--accent);
+  border-top:3px solid transparent;
+  border-radius:50%;
+  animation:spin 1s linear infinite
+}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-  @media (max-width:480px){
-    header{font-size:1.3rem}
-    select{width:90%}
-    .row{grid-template-columns: 120px 1fr 100px;}
-    .value{font-size:1rem}
-  }
+/* 列表网格 */
+.grid{
+  display:grid;
+  gap:1rem;
+  padding:0 1rem 2rem;
+  width:100%;
+  max-width:740px
+}
+
+/* 行卡片 */
+.row{
+  display:grid;
+  grid-template-columns:160px 1fr 120px;
+  align-items:center;
+  gap:.75rem;
+  padding:1.2rem 1rem;
+  border-radius:18px;
+  background:linear-gradient(135deg,#1f2937,#0f172a);
+  box-shadow:0 4px 14px rgba(0,0,0,.35);
+  backdrop-filter:blur(10px);
+  transition:.25s;
+}
+.row:hover{
+  transform:translateY(-3px) scale(1.01);
+  box-shadow:0 8px 24px rgba(0,245,255,.25);
+}
+
+/* 内容样式 */
+.label{
+  font-size:1rem;
+  color:var(--muted);
+}
+.value,.meta{
+  font-variant-numeric:tabular-nums;
+  font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  text-align:right;
+}
+.value{
+  font-size:1.25rem;
+  font-weight:600;
+  color:var(--accent);
+  text-shadow:0 0 8px rgba(0,245,255,.6);
+}
+.meta{
+  font-size:.95rem;
+  color:var(--muted);
+  white-space:nowrap
+}
+.meta.badge{
+  padding:.25rem .5rem;
+  border-radius:12px;
+  font-weight:600;
+  background:rgba(255,255,255,.05);
+}
+.meta.badge.up{color:var(--up)}
+.meta.badge.down{color:var(--down)}
+.meta.placeholder{opacity:.5}
+
+/* 响应式 */
+@media (max-width:500px){
+  header{font-size:1.5rem}
+  select{width:90%}
+  .row{grid-template-columns:120px 1fr 90px; padding:.9rem;}
+  .value{font-size:1.05rem}
+}
 </style>
 </head>
 <body>
@@ -109,19 +197,14 @@
 
 <div class="grid" id="grid"></div>
 
-<footer>&copy; 2025 <strong>FX RP</strong> &nbsp;&nbsp;&nbsp; FX Rate Pro 汇率专业服务</footer>
+<footer>&copy; 2025 <strong>FX RP</strong> · FX Rate Pro 汇率专业服务</footer>
 
 <script>
-/* ---------- 工具函数（中文注释） ---------- */
+// 工具函数
 const $ = s => document.querySelector(s);
-
-/* 将字符串安全转数字 */
 const num = v => typeof v === 'number' ? v : parseFloat(String(v).replace(/[,\s]/g,'') || '0');
 
-/* 百分比格式化（带%并保留5位小数） */
-function pct(n){ return (n).toFixed(5) + '%'; }
-
-/* 渲染一行（名称/数值/右侧差异或占位） */
+// 行渲染
 function row(label, value, metaText){
   return `
     <div class="row">
@@ -132,7 +215,7 @@ function row(label, value, metaText){
   `;
 }
 
-/* ---------- 示例数据（与你原始数据一致） ---------- */
+// 示例数据
 const rates = {
   "lak": { buy: "22192.50", sell: "21650.00", buyVolume: "274247.93", sellVolume: "373814.03" },
   "tzs": { buy: "2602.00", sell: "2400.12", buyVolume: "154419.13", sellVolume: "26319021.33" },
@@ -156,8 +239,6 @@ const rates = {
   "sgd": { buy: "0", sell: "0", buyVolume: "0", sellVolume: "0" },
   "thb": { buy: "0", sell: "0", buyVolume: "0", sellVolume: "0" }
 };
-
-/* 基准参考汇率（用于计算差异百分比） */
 const exchangeRates = {
   "usd": 1.000115,
   "hkd": 7.808151,
@@ -181,35 +262,51 @@ const exchangeRates = {
   "aed": 3.672992288163949338963
 };
 
-/* ---------- 主逻辑：加载并渲染 ---------- */
+// 主逻辑
 async function loadRates(code){
   $('#spinner').style.display='inline-block';
   try{
     const data = rates[code];
     const base = exchangeRates[code];
+    if(!data){ $('#grid').innerHTML='<div class="row"><span class="label">无数据</span><span class="value">—</span><span class="meta placeholder">—</span></div>'; return;}
 
-    // 计算差异（百分比）：(现价-基准)/基准 * 100
-    const buyDiffPct  = (((num(data.buy)  - num(base)) / num(base)) * 100).toFixed(1);
-    const sellDiffPct = (((num(data.sell) - num(base)) / num(base)) * 100).toFixed(1);
+    const buyDiffPct  = (((num(data.buy)-num(base))/num(base))*100).toFixed(1);
+    const sellDiffPct = (((num(data.sell)-num(base))/num(base))*100).toFixed(1);
 
-    
-    // 右侧第三列统一存在：两行显示百分比，两行显示占位“—”
-    $('#grid').innerHTML =
-      row('买入价--USDT', data.buy, '(' + buyDiffPct+ '%)') +
-      row('买入近期交易量', data.buyVolume + ' USDT', '') +
-      row('卖出价--USDT', data.sell, '(' + sellDiffPct + '%)') +
-      row('卖出近期交易量', data.sellVolume + ' USDT', '');
+    function diffBadge(pct){
+    const val = parseFloat(pct);
+    if(isNaN(val)) return `<span class="meta placeholder">—</span>`;
+    const cls = val > 0 ? "up" : (val < 0 ? "down" : "");
+    const sign = val > 0 ? "+" : "";
+    return `<span class="meta badge ${cls}">${sign}${val}%</span>`;
+  }
+
+  $('#grid').innerHTML =
+
+  /*  没有千分位
+    row('买入价 (USDT)', data.buy, diffBadge(buyDiffPct)) +
+    row('USDT买单总量', Math.round(Number(data.buyVolume))+' USDT', '') +
+    row('卖出价 (USDT)', data.sell, diffBadge(sellDiffPct)) +
+    row('USDT卖单总量', Math.round(Number(data.sellVolume))+' USDT', '') +
+    row('USD/'+code.toUpperCase()+'基准汇率', base.toFixed(2), '')+
+    */
+
+    // 加千分位
+row('买入价 (USDT)', Number(data.buy).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }), diffBadge(buyDiffPct)) +
+row('USDT买单总量', Math.round(Number(data.buyVolume)).toLocaleString() + ' USDT', '') +
+row('卖出价 (USDT)', Number(data.sell).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }), diffBadge(sellDiffPct)) +
+row('USDT卖单总量', Math.round(Number(data.sellVolume)).toLocaleString() + ' USDT', '') +
+row('USD/' + code.toUpperCase() + '基准汇率', base.toFixed(2).toLocaleString(), '');
+
+
 
   }catch(e){
-    console.error(e);
-    $('#grid').innerHTML = `<div class="row"><span class="label">加载失败</span><span class="value">请稍后重试</span><span class="meta placeholder">—</span></div>`;
+    $('#grid').innerHTML='<div class="row"><span class="label">加载失败</span><span class="value">请稍后重试</span><span class="meta placeholder">—</span></div>';
   }finally{
     $('#spinner').style.display='none';
   }
 }
-
-/* 默认加载一个币种以展示 */
-loadRates('aed');
+loadRates('usd');
 </script>
 </body>
 </html>
