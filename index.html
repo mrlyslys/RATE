@@ -168,29 +168,25 @@ select option:checked {
   .value{font-size:1.05rem}
 }
 
-body{
-  display:flex;
-  flex-direction:column;
-  align-items:center;   /* 水平居中 */
-  justify-content:flex-start; /* 垂直从顶开始 */
-  min-height:100vh;
-}
 
-/* 让 .form-box 和 .grid 也居中 */
-.form-box,
-.grid{
-  width:100%;
-  max-width:740px;   /* 保持你原来的最大宽度 */
-  margin:0 auto;     /* 水平居中 */
-}
+
+
 .row .value{
   text-align:center;
 }
-.form-box, .grid{
-  margin-left:auto;
-  margin-right:auto;
+html,body{margin:0;padding:0}
+body{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  min-height:100vh;
+}
+.form-box,
+.grid{
   width:100%;
-  max-width:740px;   /* 与 .grid 保持一致 */
+  max-width:740px;
+  margin:0 auto;   /* 水平居中 */
+  padding:0 1rem;  /* 手机左右留空，防止贴边 */
 }
 </style>
 </head>
