@@ -447,7 +447,7 @@ row(
   </span>`,
   ''
 )+
-row('买 四分位', `1分位:${data.buyStats.Q1.toFixed(2)}|中位:${data.buyStats.Q2.toFixed(2)}|3分位:${data.buyStats.Q3.toFixed(2)}`, '') +
+row('买单四分位', `1分位:${data.buyStats.Q1.toFixed(2)}|中位:${data.buyStats.Q2.toFixed(2)}|3分位:${data.buyStats.Q3.toFixed(2)}`, '') +
 row(
   '卖单极值范围',
   `<span style="font-size:1em;white-space:nowrap;">
@@ -455,7 +455,7 @@ row(
   </span>`,
   ''
 )+
-row('卖 四分位', `1分位:${data.sellStats.Q1.toFixed(2)}|中位:${data.sellStats.Q2.toFixed(2)}|3分位:${data.sellStats.Q3.toFixed(2)}`, '')
+row('卖单四分位', `1分位:${data.sellStats.Q1.toFixed(2)}|中位:${data.sellStats.Q2.toFixed(2)}|3分位:${data.sellStats.Q3.toFixed(2)}`, '')
   }catch(e){
     $('#grid').innerHTML='<div class="row"><span class="label">加载失败</span><span class="value">请稍后重试</span><span class="meta placeholder">—</span></div>';
   }finally{
@@ -466,3 +466,4 @@ loadRates('usd');
 </script>
 </body>
 </html>
+
