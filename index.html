@@ -173,6 +173,7 @@ select option:checked {
     <option value="aed">AED（阿联酋迪拉姆）</option>
     <option value="aud">AUD（澳元）</option>
     <!--<option value="brl">BRL（巴西雷亚尔）</option>-->
+    <option value="cop">COP（哥伦比亚比索）</option>
     <option value="eur">EUR（欧元，德国）</option>
     <!--<option value="fjd">FJD（斐济元）</option>-->
     <option value="hkd">HKD（港元）</option>
@@ -181,6 +182,7 @@ select option:checked {
     <option value="khr">KHR（柬埔寨瑞尔）</option>
     <!--<option value="krw">KRW（韩元）</option>-->
     <option value="lak">LAK（老挝基普）</option>
+    <option value="mxn">MXN（墨西哥比索）</option>
     <!--<option value="myr">MYR（马来西亚林吉特）</option>-->
     <option value="pkr">PKR（巴基斯坦卢比）</option>
     <!--<option value="sgd">SGD（新加坡元）</option>-->
@@ -190,6 +192,7 @@ select option:checked {
     <option value="usd">USD（美元）</option>
     <option value="vnd">VND（越南盾）</option>
     <option value="zar">ZAR（南非兰特）</option>
+
 
   </select>
   <div class="spinner" id="spinner" style="display:none"></div>
@@ -233,6 +236,8 @@ const rates = {
   "usd": { buy: "1.03", sell: "0.99", buyVolume: "3401166.85", sellVolume: "204970731.75" },
   "vnd": { buy: "26895.00", sell: "25803.00", buyVolume: "6179397.54", sellVolume: "536043889.48" },
   "zar": { buy: "21.12", sell: "17.09", buyVolume: "114933.71", sellVolume: "25180141.17" },
+  "mxn": { buy: "19.20", sell: "18.50", buyVolume: "1493559.39", sellVolume: "2511338.17" },
+  "cop": { buy: "4035.00", sell: "3932.00", buyVolume: "644825.15", sellVolume: "3333054.89" },
   "fjd": { buy: "0", sell: "0", buyVolume: "0", sellVolume: "0" },
   "krw": { buy: "0", sell: "0", buyVolume: "0", sellVolume: "0" },
   "myr": { buy: "0", sell: "0", buyVolume: "0", sellVolume: "0" },
@@ -259,7 +264,9 @@ const exchangeRates = {
   "myr": 4.2168027178,
   "sgd": 1.28535827657813751182,
   "thb": 32.45640645558698986393,
-  "aed": 3.672992288163949338963
+  "aed": 3.672992288163949338963,
+  "mxn": 18.65864873334,
+  "cop": 4045.9977446966
 };
 
 // 主逻辑
