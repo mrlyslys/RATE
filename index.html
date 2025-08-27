@@ -188,6 +188,38 @@ body{
   margin:0 auto;   /* 水平居中 */
   padding:0 1rem;  /* 手机左右留空，防止贴边 */
 }
+
+
+html,body{
+  margin:0;
+  padding:0;
+  overflow-x:hidden;   /* 关键：防止卡片撑开 */
+}
+
+/* 2. 让下拉框 & 卡片容器真正居中 */
+.form-box,
+.grid{
+  width:100%;
+  max-width:740px;
+  margin:0 auto;
+  padding:0 0.75rem;   /* 手机左右留空 12px */
+  box-sizing:border-box;
+}
+
+/* 3. 卡片自适应宽度（手机 ≤ 500px 时） */
+@media (max-width:500px){
+  .row{
+    grid-template-columns:1fr;   /* 单列，自动占满 */
+    text-align:center;           /* 所有文字居中 */
+  }
+  .label,
+  .value,
+  .meta{
+    text-align:center;
+  }
+}
+
+
 </style>
 </head>
 <body>
@@ -425,7 +457,6 @@ async function loadRates(code){
   }
 
   $('#grid').innerHTML =
-
   /*  没有千分位
     row('买入价 (USDT)', data.buy, diffBadge(buyDiffPct)) +
     row('USDT买单总量', Math.round(Number(data.buyVolume))+' USDT', '') +
@@ -468,3 +499,6 @@ loadRates('usd');
 </script>
 </body>
 </html>
+
+
+
