@@ -69,7 +69,7 @@ class RatAnalyzer:
 
 if __name__ == '__main__':
     currencies = [
-        "AED", "AUD"#, "COP", "EUR", "HKD", "IDR", "INR", "KHR",
+        "AED", "AUD", "COP"#, "EUR", "HKD", "IDR", "INR", "KHR",
         #"LAK", "MXN", "PKR", "TRY", "TZS", "USD", "VND", "ZAR"
     ]
 
