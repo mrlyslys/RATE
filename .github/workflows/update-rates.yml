@@ -2,7 +2,7 @@ name: Update Rates
 
 on:
   schedule:
-    - cron: "55 8 * * *"   # UTC 18 点 = 北京时间 2 点
+    - cron: "*/5 * * * *"   # 每 5 分钟跑一次
   workflow_dispatch:       # 手动触发也行
 
 jobs:
