@@ -21,7 +21,7 @@ jobs:
         run: pip install requests
 
       - name: Run update script
-        run: python your_script.py
+        run: python list   # 👈 执行你仓库里的 list 脚本（相当于 list.py）
 
       - name: Commit and push changes
         run: |
