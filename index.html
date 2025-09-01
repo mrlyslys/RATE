@@ -228,31 +228,22 @@ html,body{
 
 <div class="form-box">
   <select id="currency" onchange="loadRates(this.value)">
-    
     <option value="aed">AED（阿联酋迪拉姆）</option>
     <option value="aud">AUD（澳元）</option>
-    <!--<option value="brl">BRL（巴西雷亚尔）</option>-->
     <option value="cop">COP（哥伦比亚比索）</option>
     <option value="eur">EUR（欧元，德国）</option>
-    <!--<option value="fjd">FJD（斐济元）</option>-->
     <option value="hkd">HKD（港元）</option>
     <option value="idr">IDR（印尼盾）</option>
     <option value="inr">INR（印度卢比）</option>
     <option value="khr">KHR（柬埔寨瑞尔）</option>
-    <!--<option value="krw">KRW（韩元）</option>-->
     <option value="lak">LAK（老挝基普）</option>
     <option value="mxn">MXN（墨西哥比索）</option>
-    <!--<option value="myr">MYR（马来西亚林吉特）</option>-->
     <option value="pkr">PKR（巴基斯坦卢比）</option>
-    <!--<option value="sgd">SGD（新加坡元）</option>-->
-    <!--<option value="thb">THB（泰铢）</option>-->
     <option value="try">TRY（土耳其里拉）</option>
     <option value="tzs">TZS（坦桑尼亚先令）</option>
     <option value="usd">USD（美元）</option>
     <option value="vnd">VND（越南盾）</option>
     <option value="zar">ZAR（南非兰特）</option>
-
-
   </select>
   <div class="spinner" id="spinner" style="display:none"></div>
 </div>
@@ -262,6 +253,34 @@ html,body{
 <footer>&copy; 2025 <strong>FX RP</strong> · FX Rate Pro 汇率专业服务</footer>
 
 <script>
+//获取USDT与各币的汇率
+const symbols = [
+  'usd', 'hkd', 'tzs', 'lak', 'idr', 'aud', 'brl', 'eur',
+  'inr', 'khr', 'pkr', 'try', 'vnd', 'zar', 'fjd', 'krw',
+  'myr', 'sgd', 'thb', 'aed', 'mxn', 'cop'
+];
+function toCoinbasePair(code) {
+  return 'USDT-' + code.toUpperCase();
+}
+async function fetchAllRates() {
+  const promises = symbols.map(async code => {
+    const pair = toCoinbasePair(code);
+    const url  = `https://api.coinbase.com/v2/prices/${pair}/spot`;
+    const res  = await fetch(url);
+    if (!res.ok) throw new Error(`${pair} failed`);
+    const { data } = await res.json();
+    return [code, parseFloat(data.amount)];
+  });
+
+  const entries = await Promise.all(promises);
+  return Object.fromEntries(entries);   // { usd: 1.0001, hkd: 7.807, ... }
+}
+let exchangeRates = {};    
+fetchAllRates()
+  .then(rates => { exchangeRates = rates; console.log(rates); })
+  .catch(console.error);
+
+
 // 工具函数
 const $ = s => document.querySelector(s);
 const num = v => typeof v === 'number' ? v : parseFloat(String(v).replace(/[,\s]/g,'') || '0');
@@ -279,25 +298,6 @@ function row(label, value, metaText){
 
 // 示例数据
 const rates = {
-  /*"lak": { buy: "22192.50", sell: "21650.00", buyVolume: "274247.93", sellVolume: "373814.03" },
-  "tzs": { buy: "2602.00", sell: "2400.12", buyVolume: "154419.13", sellVolume: "26319021.33" },
-  "aed": { buy: "3.77", sell: "3.57", buyVolume: "3023034.85", sellVolume: "112931159.97" },
-  "aud": { buy: "1.70", sell: "1.40", buyVolume: "124099.75", sellVolume: "46191939.90" },
-  
-  "eur": { buy: "0.91", sell: "0.83", buyVolume: "930116.21", sellVolume: "59191966.82" },
-  "hkd": { buy: "7.89", sell: "7.77", buyVolume: "6246946.22", sellVolume: "154805922.38" },
-  "idr": { buy: "16474.50", sell: "16100.00", buyVolume: "2568620.31", sellVolume: "149924656.12" },
-  "inr": { buy: "96.75", sell: "88.00", buyVolume: "408808.87", sellVolume: "62674259.66" },
-  "khr": { buy: "4040.00", sell: "3945.00", buyVolume: "118740.43", sellVolume: "22933076.29" },
-  "lak": { buy: "22185.00", sell: "21764.50", buyVolume: "470503.41", sellVolume: "458843.83" },
-  "pkr": { buy: "299.50", sell: "282.19", buyVolume: "495969.30", sellVolume: "55214889.21" },
-  "try": { buy: "43.50", sell: "36.50", buyVolume: "117992.20", sellVolume: "45137779.40" },
-  "usd": { buy: "1.03", sell: "0.99", buyVolume: "3401166.85", sellVolume: "204970731.75" },
-  "vnd": { buy: "26895.00", sell: "25803.00", buyVolume: "6179397.54", sellVolume: "536043889.48" },
-  "zar": { buy: "21.12", sell: "17.09", buyVolume: "114933.71", sellVolume: "25180141.17" },
-  "mxn": { buy: "19.20", sell: "18.50", buyVolume: "1493559.39", sellVolume: "2511338.17" },
-  "cop": { buy: "4035.00", sell: "3932.00", buyVolume: "644825.15", sellVolume: "3333054.89" },
-*/
   "lak": { 
     "buy": "22192.50", "sell": "21650.00", "buyVolume": "274247.93", "sellVolume": "373814.03",
     "buyStats": { "Q1": 22170.75, "Q2": 22192.50, "Q3": 23333.75, "min": 22159.00, "max": 32539.00 },
@@ -378,64 +378,10 @@ const rates = {
     "buyStats": { "Q1": 4012.92, "Q2": 4035.00, "Q3": 4138.05, "min": 3990.00, "max": 4461.80 },
     "sellStats": { "Q1": 3850.00, "Q2": 3932.00, "Q3": 3961.10, "min": 3050.00, "max": 4012.78 }
   }
-  // 额外的数据
-  /*
-"brl": { 
-  "buy": "0", "sell": "0", "buyVolume": "0", "sellVolume": "0",
-  "buyStats": { "Q1": 0, "Q2": 0, "Q3": 0, "min": 0, "max": 0 },
-  "sellStats": { "Q1": 0, "Q2": 0, "Q3": 0, "min": 0, "max": 0 }
-},
-"fjd": { 
-  "buy": "0", "sell": "0", "buyVolume": "0", "sellVolume": "0",
-  "buyStats": { "Q1": 0, "Q2": 0, "Q3": 0, "min": 0, "max": 0 },
-  "sellStats": { "Q1": 0, "Q2": 0, "Q3": 0, "min": 0, "max": 0 }
-},
-"krw": { 
-  "buy": "0", "sell": "0", "buyVolume": "0", "sellVolume": "0",
-  "buyStats": { "Q1": 0, "Q2": 0, "Q3": 0, "min": 0, "max": 0 },
-  "sellStats": { "Q1": 0, "Q2": 0, "Q3": 0, "min": 0, "max": 0 }
-},
-"myr": { 
-  "buy": "0", "sell": "0", "buyVolume": "0", "sellVolume": "0",
-  "buyStats": { "Q1": 0, "Q2": 0, "Q3": 0, "min": 0, "max": 0 },
-  "sellStats": { "Q1": 0, "Q2": 0, "Q3": 0, "min": 0, "max": 0 }
-},
-"sgd": { 
-  "buy": "0", "sell": "0", "buyVolume": "0", "sellVolume": "0",
-  "buyStats": { "Q1": 0, "Q2": 0, "Q3": 0, "min": 0, "max": 0 },
-  "sellStats": { "Q1": 0, "Q2": 0, "Q3": 0, "min": 0, "max": 0 }
-},
-"thb": { 
-  "buy": "0", "sell": "0", "buyVolume": "0", "sellVolume": "0",
-  "buyStats": { "Q1": 0, "Q2": 0, "Q3": 0, "min": 0, "max": 0 },
-  "sellStats": { "Q1": 0, "Q2": 0, "Q3": 0, "min": 0, "max": 0 }
-}
-*/
 };
-const exchangeRates = {
-  "usd": 1.000115,
-  "hkd": 7.808151,
-  "tzs": 2507.28671,
-  "lak": 21762.71968,
-  "idr": 16268.61705,
-  "aud": 1.54502,
-  "brl": 5.41190896,
-  "eur": 0.86096,
-  "inr": 87.75292148,
-  "khr": 4020.74002,
-  "pkr": 284.059544,
-  "try": 41.014962674,
-  "vnd": 26343.554412,
-  "zar": 17.612433062,
-  "fjd": 2.266387944646691364756,
-  "krw": 1396.544120879963105879469,
-  "myr": 4.2168027178,
-  "sgd": 1.28535827657813751182,
-  "thb": 32.45640645558698986393,
-  "aed": 3.672992288163949338963,
-  "mxn": 18.65864873334,
-  "cop": 4045.9977446966
-};
+
+
+
 
 // 主逻辑
 async function loadRates(code){
@@ -495,10 +441,10 @@ row('卖单四分位', `1分位:${data.sellStats.Q1.toFixed(2)}|中位:${data.se
     $('#spinner').style.display='none';
   }
 }
-loadRates('usd');
+fetchAllRates()
+  .then(rates => { exchangeRates = rates; /* 先拿到实时汇率 */
+                   loadRates('aed');      /* 再渲染 AED */ })
+  .catch(console.error);
 </script>
 </body>
 </html>
-
-
-
